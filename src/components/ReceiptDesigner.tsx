@@ -41,6 +41,17 @@ const ELEMENT_TYPES: DragItem[] = [
   { type: 'subtotalAfter', label: '🧾 Subtotal After', defaultContent: 'Subtotal after discounts:' },
   { type: 'tax', label: '🏛️ Tax Line', defaultContent: 'Tax (8.0%):' },
   { type: 'total', label: '💳 Total', defaultContent: 'TOTAL:' },
+  { type: 'customerHeader', label: '👤 Customer Header', defaultContent: 'CUSTOMER INFORMATION:' },
+  { type: 'customerName', label: '📛 Customer Name', defaultContent: '  Name: John Doe' },
+  { type: 'memberStatus', label: '🏆 Member Status', defaultContent: '  Member Status: GOLD' },
+  { type: 'customerId', label: '🆔 Customer ID', defaultContent: '  Customer ID: CUST-8826' },
+  { type: 'loyaltyPoints', label: '💎 Loyalty Points', defaultContent: '  Loyalty Points: 1,247' },
+  { type: 'memberSince', label: '📅 Member Since', defaultContent: '  Member Since: 2019-03-15' },
+  { type: 'paymentMethod', label: '💳 Payment Method', defaultContent: 'Payment Method: VISA ****1234' },
+  { type: 'loyaltyRewardsHeader', label: '🎁 Loyalty Rewards', defaultContent: 'LOYALTY REWARDS:' },
+  { type: 'pointsEarned', label: '⭐ Points Earned', defaultContent: '  Points Earned Today: 40' },
+  { type: 'totalPoints', label: '💰 Total Points', defaultContent: '  Total Points: 1,287' },
+  { type: 'membershipStatus', label: '👑 Membership Status', defaultContent: '  Status: GOLD Member' },
   { type: 'loyalty', label: '⭐ Loyalty Points', defaultContent: '         Loyalty points earned: 27' },
   { type: 'thanks', label: '😊 Thank You', defaultContent: 'Thank you for your order!' },
   { type: 'spacer', label: '⬜ Blank Line', lines: 1 },
@@ -184,6 +195,49 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
     updateJson(templateElements);
   };
 
+  const loadRound3Template = () => {
+    const templateElements: ReceiptElement[] = [
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'header', content: 'PIZZA PALACE', alignment: 'CENTER' },
+      { id: generateId(), type: 'text', content: 'Store #003', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'orderInfo', content: 'Order #C-2024   Date: 12/04/2024' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'customerHeader', content: 'CUSTOMER INFORMATION:' },
+      { id: generateId(), type: 'customerName', content: '  Name: John Doe' },
+      { id: generateId(), type: 'memberStatus', content: '  Member Status: GOLD' },
+      { id: generateId(), type: 'customerId', content: '  Customer ID: CUST-8826' },
+      { id: generateId(), type: 'loyaltyPoints', content: '  Loyalty Points: 1,247' },
+      { id: generateId(), type: 'memberSince', content: '  Member Since: 2019-03-15' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'itemHeader', content: 'ITEMS:' },
+      { id: generateId(), type: 'item', content: 'Large Pepperoni Pizza   x1 $18.99' },
+      { id: generateId(), type: 'item', content: 'Garlic Breadsticks      x2 $13.98' },
+      { id: generateId(), type: 'text', content: '  @ $6.99 each' },
+      { id: generateId(), type: 'item', content: '2-Liter Soda            x1  $3.99' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'subtotal', content: 'Subtotal:               $36.96' },
+      { id: generateId(), type: 'tax', content: 'Tax (8.0%):             $2.96' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'total', content: 'TOTAL:                  $39.92' },
+      { id: generateId(), type: 'paymentMethod', content: 'Payment Method: VISA ****1234' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'loyaltyRewardsHeader', content: 'LOYALTY REWARDS:' },
+      { id: generateId(), type: 'pointsEarned', content: '  Points Earned Today: 40' },
+      { id: generateId(), type: 'totalPoints', content: '  Total Points: 1,287' },
+      { id: generateId(), type: 'membershipStatus', content: '  Status: GOLD Member' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'thanks', content: 'Thank you for being a loyal customer!', alignment: 'CENTER' },
+      { id: generateId(), type: 'thanks', content: 'See you again soon!', alignment: 'CENTER' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'separator', content: '================================' },
+    ];
+    
+    setElements(templateElements);
+    updateJson(templateElements);
+  };
+
   const handleDragStart = (e: React.DragEvent, item: DragItem) => {
     setDraggedItem(item);
     e.dataTransfer.effectAllowed = 'copy';
@@ -218,9 +272,16 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
           
           <button
             onClick={loadRound2Template}
-            className="w-full mb-4 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex-shrink-0"
+            className="w-full mb-2 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex-shrink-0"
           >
             ☕ Load Round 2 Template
+          </button>
+          
+          <button
+            onClick={loadRound3Template}
+            className="w-full mb-4 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm flex-shrink-0"
+          >
+            🍕 Load Round 3 Template
           </button>
 
           <div className="space-y-2 overflow-y-auto flex-1">
