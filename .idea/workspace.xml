@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2258f97-b3bb-4af5-863a-33221eb02c71" name="Changes" comment="" />
+    <list default="true" id="b2258f97-b3bb-4af5-863a-33221eb02c71" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-examples/InterpreterTemplate.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-examples/InterpreterTemplate.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ReceiptDesigner.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ReceiptDesigner.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
