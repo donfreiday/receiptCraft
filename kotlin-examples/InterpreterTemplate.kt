@@ -12,7 +12,7 @@ import kotlinx.serialization.json.*
 fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
     try {
         // Set center alignment for all text
-        printer.addTextAlign(TextAlign.CENTER)
+        printer.addTextAlign(Alignment.CENTER)
         
         // Ignore the JSON input and print the exact test receipt
         printer.addText("================================", null)
@@ -47,7 +47,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
         
     } catch (e: Exception) {
         // Error handling - print error message on receipt
-        printer.addTextAlign(TextAlign.CENTER)
+        printer.addTextAlign(Alignment.CENTER)
         printer.addText("ERROR: ${e.message}", TextStyle(bold = true))
         printer.addFeedLine(2)
         printer.cutPaper()
