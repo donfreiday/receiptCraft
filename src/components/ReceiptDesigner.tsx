@@ -1,152 +1,305 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 interface ReceiptDesignerProps {
   onJsonUpdate: (json: string) => void;
 }
 
-/**
- * TODO: Build your receipt designer here!
- * 
- * Requirements:
- * - Create a visual interface for designing receipts
- * - Support various element types (text, barcode, QR code, etc.)
- * - Generate JSON DSL from the design
- * - Call onJsonUpdate() whenever the design changes
- * 
- * Ideas to consider:
- * - Drag and drop interface
- * - Element palette
- * - Properties panel
- * - Live JSON preview
- * - Template presets
- */
+interface ReceiptElement {
+  id: string;
+  type: string;
+  content?: string;
+  alignment?: string;
+  style?: {
+    bold?: boolean;
+    size?: string;
+  };
+  lines?: number;
+}
+
+interface DragItem {
+  type: string;
+  label: string;
+  defaultContent?: string;
+  alignment?: string;
+}
+
+const ELEMENT_TYPES: DragItem[] = [
+  { type: 'header', label: '🏪 Store Header', defaultContent: 'BYTE BURGERS', alignment: 'CENTER' },
+  { type: 'separator', label: '═══ Separator', defaultContent: '================================================' },
+  { type: 'text', label: '📝 Text Line', defaultContent: 'Store #001' },
+  { type: 'orderInfo', label: '📋 Order Info', defaultContent: 'Order #A-0042' },
+  { type: 'itemHeader', label: '🛍️ Items Section', defaultContent: 'ITEMS:' },
+  { type: 'item', label: '🍔 Menu Item', defaultContent: 'Cheeseburger' },
+  { type: 'itemPrice', label: '💰 Item with Price', defaultContent: 'French Fries' },
+  { type: 'subtotal', label: '🧮 Subtotal', defaultContent: 'Subtotal:' },
+  { type: 'tax', label: '🏛️ Tax Line', defaultContent: 'Tax (8.0%):' },
+  { type: 'total', label: '💳 Total', defaultContent: 'TOTAL:' },
+  { type: 'thanks', label: '😊 Thank You', defaultContent: 'Thank you for your order!' },
+  { type: 'spacer', label: '⬜ Blank Line', lines: 1 },
+];
+
 export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }) => {
-  // TODO: Implement your receipt designer
-  
-  // Initialize with test receipt JSON from AGENT-CLAUDE.md
-  React.useEffect(() => {
-    const testReceiptJson = {
-      elements: [
-        // Header separator
-        { type: "text", content: "================================================" },
-        { type: "text", content: "RECEIPT PRINTER TEST" },
-        { type: "text", content: "================================================" },
-        { type: "text", content: "Welcome to the Hackathon!" },
-        { type: "feedLine", lines: 1 },
-        
-        // Test description - indented
-        { type: "text", content: "        This is a test receipt to verify" },
-        { type: "text", content: "        your system is working correctly." },
-        { type: "feedLine", lines: 1 },
-        { type: "text", content: "        Round 0: System Check" },
-        { type: "feedLine", lines: 1 },
-        { type: "text", content: "        Your pipeline should work as:" },
-        { type: "text", content: "        1. Design in UI" },
-        { type: "text", content: "        2. Generate JSON" },
-        { type: "text", content: "        3. Interpret with Kotlin" },
-        { type: "text", content: "        4. Print receipt" },
-        { type: "feedLine", lines: 1 },
-        
-        // Footer separator
-        { type: "text", content: "================================================" },
-        { type: "feedLine", lines: 1 },
-        { type: "text", content: "        Good luck teams!" },
-        { type: "feedLine", lines: 1 },
-        { type: "text", content: "================================================" },
-        
-        // Cut the paper
-        { type: "cutPaper" }
-      ]
+  const [elements, setElements] = useState<ReceiptElement[]>([]);
+  const [draggedItem, setDraggedItem] = useState<DragItem | null>(null);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+
+  const generateId = () => Math.random().toString(36).substr(2, 9);
+
+  const updateJson = useCallback((elementList: ReceiptElement[]) => {
+    const receiptJson = {
+      layout: {
+        alignment: "CENTER",
+        sections: elementList.map(el => {
+          switch (el.type) {
+            case 'header':
+              return {
+                type: 'storeHeader',
+                content: el.content,
+                alignment: el.alignment || 'CENTER',
+                style: { bold: true, size: 'LARGE' }
+              };
+            case 'separator':
+              return { type: 'separator', style: '=' };
+            case 'text':
+              return { type: 'text', content: el.content, alignment: el.alignment };
+            case 'orderInfo':
+              return { type: 'orderInfo', showOrderId: true, showDate: true };
+            case 'itemHeader':
+              return { type: 'itemsHeader', content: 'ITEMS:' };
+            case 'item':
+              return { type: 'itemList', showQuantity: true, showUnitPrice: true };
+            case 'itemPrice':
+              return { type: 'itemLine', showPrice: true, alignment: 'RIGHT' };
+            case 'subtotal':
+              return { type: 'subtotal', alignment: 'RIGHT' };
+            case 'tax':
+              return { type: 'tax', showRate: true, alignment: 'RIGHT' };
+            case 'total':
+              return { type: 'total', style: { bold: true }, alignment: 'RIGHT' };
+            case 'thanks':
+              return { type: 'thankYou', content: el.content, alignment: 'CENTER' };
+            case 'spacer':
+              return { type: 'spacer', lines: el.lines || 1 };
+            default:
+              return { type: 'text', content: el.content };
+          }
+        })
+      }
     };
-    onJsonUpdate(JSON.stringify(testReceiptJson, null, 2));
-  }, []); // Remove onJsonUpdate from dependencies to only run once
+    onJsonUpdate(JSON.stringify(receiptJson, null, 2));
+  }, [onJsonUpdate]);
+
+  const addElement = (dragItem: DragItem, index?: number) => {
+    const newElement: ReceiptElement = {
+      id: generateId(),
+      type: dragItem.type,
+      content: dragItem.defaultContent,
+      alignment: dragItem.alignment,
+      lines: dragItem.type === 'spacer' ? 1 : undefined,
+    };
+
+    setElements(prev => {
+      let newElements;
+      if (index !== undefined) {
+        newElements = [...prev];
+        newElements.splice(index, 0, newElement);
+      } else {
+        newElements = [...prev, newElement];
+      }
+      updateJson(newElements);
+      return newElements;
+    });
+  };
+
+  const removeElement = (id: string) => {
+    setElements(prev => {
+      const newElements = prev.filter(el => el.id !== id);
+      updateJson(newElements);
+      return newElements;
+    });
+  };
+
+  const updateElement = (id: string, updates: Partial<ReceiptElement>) => {
+    setElements(prev => {
+      const newElements = prev.map(el => 
+        el.id === id ? { ...el, ...updates } : el
+      );
+      updateJson(newElements);
+      return newElements;
+    });
+  };
+
+  const loadTemplate = () => {
+    const templateElements: ReceiptElement[] = [
+      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'header', content: 'BYTE BURGERS', alignment: 'CENTER' },
+      { id: generateId(), type: 'text', content: 'Store #001', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'orderInfo', content: 'Order #A-0042            Date: 12/04/2024' },
+      { id: generateId(), type: 'separator', content: '------------------------------------------------' },
+      { id: generateId(), type: 'itemHeader', content: 'ITEMS:' },
+      { id: generateId(), type: 'item', content: 'Cheeseburger                    x2      $17.98' },
+      { id: generateId(), type: 'text', content: '@ $8.99 each' },
+      { id: generateId(), type: 'item', content: 'French Fries                    x1       $3.99' },
+      { id: generateId(), type: 'item', content: 'Soft Drink                      x2       $5.98' },
+      { id: generateId(), type: 'text', content: '@ $2.99 each' },
+      { id: generateId(), type: 'separator', content: '------------------------------------------------' },
+      { id: generateId(), type: 'subtotal', content: 'Subtotal:                              $27.95' },
+      { id: generateId(), type: 'tax', content: 'Tax (8.0%):                             $2.24' },
+      { id: generateId(), type: 'separator', content: '------------------------------------------------' },
+      { id: generateId(), type: 'total', content: 'TOTAL:                                 $30.19' },
+      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'thanks', content: 'Thank you for your order!', alignment: 'CENTER' },
+      { id: generateId(), type: 'thanks', content: 'Have a great day!', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================================' },
+    ];
+    
+    setElements(templateElements);
+    updateJson(templateElements);
+  };
+
+  const handleDragStart = (e: React.DragEvent, item: DragItem) => {
+    setDraggedItem(item);
+    e.dataTransfer.effectAllowed = 'copy';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  };
+
+  const handleDrop = (e: React.DragEvent, index?: number) => {
+    e.preventDefault();
+    if (draggedItem) {
+      addElement(draggedItem, index);
+      setDraggedItem(null);
+    }
+  };
 
   return (
-    <div className="h-full p-8 bg-gray-900">
-      <div className="bg-gray-800 rounded-lg shadow-2xl p-6 h-full overflow-auto">
-        <h2 className="text-2xl font-bold mb-4 text-gray-100">Receipt Designer</h2>
+    <div className="h-full p-4 bg-gray-900 flex gap-4">
+      {/* Element Palette */}
+      <div className="w-64 bg-gray-800 rounded-lg p-4">
+        <h3 className="text-lg font-bold text-white mb-4">🧰 Elements</h3>
         
-        <div className="bg-red-900/20 border-2 border-red-500 rounded-lg p-4 mb-6">
-          <h3 className="text-lg font-bold text-red-400 mb-2">⚠️ CRITICAL: Update Parent Component</h3>
-          <p className="text-gray-200 font-mono">
-            You MUST call: <code className="bg-gray-700 px-2 py-1 rounded text-yellow-300">onJsonUpdate(jsonString)</code>
-          </p>
-          <p className="text-gray-300 text-sm mt-2">
-            This updates the parent component with your JSON design. Without this, your design won't appear in the Preview tab!
-          </p>
-        </div>
-        
-        <div className="bg-gray-700 border-2 border-yellow-500 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2 text-yellow-400">🚧 TODO: Implement Your Designer</h3>
-          <p className="text-gray-300 mb-4">
-            Build your visual receipt designer that generates JSON DSL!
-          </p>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-bold text-green-400 mb-2">Implementation Requirements:</h4>
-              <ul className="list-decimal list-inside space-y-2 text-gray-300">
-                <li>Create UI elements for designing receipts (buttons, forms, drag-drop, etc.)</li>
-                <li>Support element types: text, barcode, QR code, alignment, feed lines</li>
-                <li>Generate JSON that describes the receipt LAYOUT (not data)</li>
-                <li className="text-yellow-300 font-bold">Call onJsonUpdate() whenever design changes!</li>
-              </ul>
-            </div>
+        <button
+          onClick={loadTemplate}
+          className="w-full mb-4 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+        >
+          📋 Load Round 1 Template
+        </button>
 
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-bold text-blue-400 mb-2">Example Implementation Pattern:</h4>
-              <pre className="text-gray-300 font-mono text-sm overflow-x-auto">{`// When user adds/modifies an element:
-const updateDesign = () => {
-  const myDesignJson = {
-    sections: [
-      { type: "header", alignment: "CENTER" },
-      { type: "itemList", showPrices: true },
-      { type: "totals", includeTax: true }
-    ]
-  };
-  
-  // THIS IS REQUIRED - Updates parent!
-  onJsonUpdate(JSON.stringify(myDesignJson, null, 2));
-};`}</pre>
+        <div className="space-y-2">
+          {ELEMENT_TYPES.map(item => (
+            <div
+              key={item.type}
+              draggable
+              onDragStart={(e) => handleDragStart(e, item)}
+              className="p-3 bg-gray-700 rounded cursor-move hover:bg-gray-600 text-white text-sm border border-gray-600"
+            >
+              {item.label}
             </div>
-
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-bold text-purple-400 mb-2">JSON Design Philosophy:</h4>
-              <p className="text-gray-300 text-sm mb-2">Your JSON should be a TEMPLATE that describes layout, not actual data:</p>
-              <div className="grid md:grid-cols-2 gap-3 mt-3">
-                <div className="bg-red-900/30 p-2 rounded">
-                  <p className="text-red-400 font-bold text-xs">❌ BAD: Hardcoded Data</p>
-                  <pre className="text-gray-400 text-xs mt-1">{`{
-  "items": [
-    {"name": "Burger", "price": 8.99}
-  ]
-}`}</pre>
-                </div>
-                <div className="bg-green-900/30 p-2 rounded">
-                  <p className="text-green-400 font-bold text-xs">✅ GOOD: Layout Template</p>
-                  <pre className="text-gray-400 text-xs mt-1">{`{
-  "itemSection": {
-    "showSku": true,
-    "priceAlign": "RIGHT"
-  }
-}`}</pre>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <h4 className="font-bold text-yellow-400 mb-2">Available Resources:</h4>
-              <ul className="list-disc list-inside space-y-1 text-gray-300 text-sm">
-                <li>Printer interfaces: <code className="bg-gray-700 px-2 py-1 rounded text-green-400">src/interfaces/epson-printer-exact.ts</code></li>
-                <li>Test in Preview tab → JSON to see your output</li>
-                <li>Use JS Interpreter tab to test interpretation logic</li>
-              </ul>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
+
+      {/* Receipt Canvas */}
+      <div className="flex-1 bg-gray-800 rounded-lg p-4">
+        <h3 className="text-lg font-bold text-white mb-4">🧾 Receipt Design</h3>
+        
+        <div 
+          className="bg-white p-6 rounded-lg min-h-96 font-mono text-sm"
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e)}
+        >
+          {elements.length === 0 ? (
+            <div className="text-gray-500 text-center py-8 border-2 border-dashed border-gray-300 rounded">
+              Drag elements here to design your receipt
+            </div>
+          ) : (
+            elements.map((element, index) => (
+              <div
+                key={element.id}
+                className={`receipt-line group relative ${element.alignment === 'CENTER' ? 'text-center' : element.alignment === 'RIGHT' ? 'text-right' : 'text-left'} 
+                  ${selectedElement === element.id ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
+                onClick={() => setSelectedElement(element.id)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+              >
+                {element.type === 'spacer' ? (
+                  <div className="h-4"></div>
+                ) : (
+                  <span className="break-all">{element.content || '[Empty]'}</span>
+                )}
+                
+                <button
+                  onClick={(e) => { e.stopPropagation(); removeElement(element.id); }}
+                  className="absolute right-0 top-0 opacity-0 group-hover:opacity-100 bg-red-500 text-white text-xs px-1 rounded"
+                >
+                  ✕
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Properties Panel */}
+      {selectedElement && (
+        <div className="w-64 bg-gray-800 rounded-lg p-4">
+          <h3 className="text-lg font-bold text-white mb-4">⚙️ Properties</h3>
+          
+          {(() => {
+            const element = elements.find(el => el.id === selectedElement);
+            if (!element) return null;
+
+            return (
+              <div className="space-y-4">
+                {element.type !== 'spacer' && (
+                  <div>
+                    <label className="block text-white text-sm mb-2">Content:</label>
+                    <textarea
+                      value={element.content || ''}
+                      onChange={(e) => updateElement(element.id, { content: e.target.value })}
+                      className="w-full p-2 bg-gray-700 text-white rounded text-sm"
+                      rows={3}
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-white text-sm mb-2">Alignment:</label>
+                  <select
+                    value={element.alignment || 'LEFT'}
+                    onChange={(e) => updateElement(element.id, { alignment: e.target.value })}
+                    className="w-full p-2 bg-gray-700 text-white rounded text-sm"
+                  >
+                    <option value="LEFT">Left</option>
+                    <option value="CENTER">Center</option>
+                    <option value="RIGHT">Right</option>
+                  </select>
+                </div>
+
+                {element.type === 'spacer' && (
+                  <div>
+                    <label className="block text-white text-sm mb-2">Lines:</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={element.lines || 1}
+                      onChange={(e) => updateElement(element.id, { lines: parseInt(e.target.value) })}
+                      className="w-full p-2 bg-gray-700 text-white rounded text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      )}
     </div>
   );
 };

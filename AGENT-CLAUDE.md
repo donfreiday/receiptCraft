@@ -1,26 +1,21 @@
-
-----
-
-DO THIS, we want this exactly to be printed
-
 ================================================
-RECEIPT PRINTER TEST
+BYTE BURGERS
+Store #001
 ================================================
-Welcome to the Hackathon!
-
-        This is a test receipt to verify
-        your system is working correctly.
-        
-        Round 0: System Check
-        
-        Your pipeline should work as:
-        1. Design in UI
-        2. Generate JSON
-        3. Interpret with Kotlin
-        4. Print receipt
-        
+Order #A-0042            Date: 12/04/2024
+------------------------------------------------
+ITEMS:
+Cheeseburger                    x2      $17.98
+@ $8.99 each
+French Fries                    x1       $3.99
+Soft Drink                      x2       $5.98
+@ $2.99 each
+------------------------------------------------
+Subtotal:                              $27.95
+Tax (8.0%):                             $2.24
+------------------------------------------------
+TOTAL:                                 $30.19
 ================================================
-
-        Good luck teams!
-        
+        Thank you for your order!
+           Have a great day!
 ================================================

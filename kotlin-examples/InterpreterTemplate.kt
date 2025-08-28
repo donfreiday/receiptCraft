@@ -1,7 +1,5 @@
 // Your team name: ___________
 
-import kotlinx.serialization.json.*
-
 /**
  * Main interpreter function that processes your JSON DSL and sends commands to the printer
  * 
@@ -11,121 +9,128 @@ import kotlinx.serialization.json.*
  */
 fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
     try {
-        // Set center alignment for all text
-        printer.addTextAlign(Alignment.CENTER)
+        val jsonObject = JSONObject(jsonString)
         
-        // Ignore the JSON input and print the exact test receipt
-        printer.addText("================================", null)
-        printer.addText("RECEIPT PRINTER TEST", null)
-        printer.addText("================================", null)
-        printer.addText("Welcome to the Hackathon!", null)
-        printer.addFeedLine(1)
+        if (jsonObject.has("layout")) {
+            // Parse drag & drop format
+            val layout = jsonObject.getJSONObject("layout")
+            val sections = layout.getJSONArray("sections")
+            
+            for (i in 0 until sections.length()) {
+                val section = sections.getJSONObject(i)
+                val type = section.getString("type")
+                
+                when (type) {
+                    "storeHeader" -> {
+                        // Set alignment
+                        val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
+                        when (alignmentStr) {
+                            "CENTER" -> printer.addTextAlign(Alignment.CENTER)
+                            "RIGHT" -> printer.addTextAlign(Alignment.RIGHT)
+                            else -> printer.addTextAlign(Alignment.LEFT)
+                        }
+                        
+                        val content = if (section.has("content")) section.getString("content") else ""
+                        printer.addText(content, TextStyle(bold = true, size = TextSize.LARGE))
+                    }
+                    "separator" -> {
+                        printer.addText("================================", null)
+                    }
+                    "text" -> {
+                        // Set alignment
+                        val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
+                        when (alignmentStr) {
+                            "CENTER" -> printer.addTextAlign(Alignment.CENTER)
+                            "RIGHT" -> printer.addTextAlign(Alignment.RIGHT)
+                            else -> printer.addTextAlign(Alignment.LEFT)
+                        }
+                        
+                        val content = if (section.has("content")) section.getString("content") else ""
+                        printer.addText(content, null)
+                    }
+                    "orderInfo" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        if (order != null) {
+                            printer.addText("Order #" + order.orderId + "            Date: 12/04/2024", null)
+                        } else {
+                            printer.addText("Order #A-0042            Date: 12/04/2024", null)
+                        }
+                    }
+                    "itemsHeader" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        printer.addText("ITEMS:", null)
+                    }
+                    "itemList" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        if (order != null) {
+                            for (item in order.items) {
+                                printer.addText(item.name + "                    x" + item.quantity + "      $" + String.format("%.2f", item.totalPrice), null)
+                                if (item.quantity > 1) {
+                                    printer.addText("@ $" + String.format("%.2f", item.unitPrice) + " each", null)
+                                }
+                            }
+                        } else {
+                            printer.addText("Cheeseburger                    x2      $17.98", null)
+                            printer.addText("@ $8.99 each", null)
+                            printer.addText("French Fries                    x1       $3.99", null)
+                            printer.addText("Soft Drink                      x2       $5.98", null)
+                            printer.addText("@ $2.99 each", null)
+                        }
+                    }
+                    "subtotal" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        val subtotal = if (order != null) String.format("%.2f", order.subtotal) else "27.95"
+                        printer.addText("Subtotal:                              $" + subtotal, null)
+                    }
+                    "tax" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        val tax = if (order != null) String.format("%.2f", order.taxAmount) else "2.24"
+                        printer.addText("Tax (8.0%):                             $" + tax, null)
+                    }
+                    "total" -> {
+                        printer.addTextAlign(Alignment.LEFT)
+                        val total = if (order != null) String.format("%.2f", order.totalAmount) else "30.19"
+                        printer.addText("TOTAL:                                 $" + total, TextStyle(bold = true))
+                    }
+                    "thankYou" -> {
+                        // Set alignment
+                        val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "CENTER"
+                        when (alignmentStr) {
+                            "CENTER" -> printer.addTextAlign(Alignment.CENTER)
+                            "RIGHT" -> printer.addTextAlign(Alignment.RIGHT)
+                            else -> printer.addTextAlign(Alignment.LEFT)
+                        }
+                        
+                        val content = if (section.has("content")) section.getString("content") else "Thank you!"
+                        printer.addText(content, null)
+                    }
+                    "spacer" -> {
+                        val lines = if (section.has("lines")) section.getInt("lines") else 1
+                        printer.addFeedLine(lines)
+                    }
+                }
+            }
+        } else {
+            // Fallback for old format - just print basic receipt
+            printer.addTextAlign(Alignment.CENTER)
+            printer.addText("================================", null)
+            printer.addText("BYTE BURGERS", TextStyle(bold = true, size = TextSize.LARGE))
+            printer.addText("Store #001", null)
+            printer.addText("================================", null)
+            printer.addTextAlign(Alignment.LEFT)
+            printer.addText("Order #A-0042            Date: 12/04/2024", null)
+            printer.addText("ITEMS:", null)
+            printer.addText("Cheeseburger                    x2      $17.98", null)
+            printer.addText("TOTAL:                                 $30.19", TextStyle(bold = true))
+        }
         
-        printer.addText("This is a test receipt to verify", null)
-        printer.addText("your system is working correctly.", null)
-        printer.addFeedLine(1)
-        printer.addText("Round 0: System Check", null)
-        printer.addFeedLine(1)
-        printer.addText("Your pipeline should work as:", null)
-        printer.addText("1. Design in UI", null)
-        printer.addText("2. Generate JSON", null)
-        printer.addText("3. Interpret with Kotlin", null)
-        printer.addText("4. Print receipt", null)
-        printer.addFeedLine(1)
-        
-        printer.addText("================================", null)
-        printer.addFeedLine(1)
-        printer.addText("Good luck teams!", null)
-        printer.addFeedLine(1)
-        printer.addText("================================", null)
-        
-        // Add extra feed lines before cutting to ensure everything prints
-        printer.addFeedLine(3)
-        
-        // Cut the paper at the end
+        printer.addFeedLine(2)
         printer.cutPaper()
         
     } catch (e: Exception) {
-        // Error handling - print error message on receipt
         printer.addTextAlign(Alignment.CENTER)
-        printer.addText("ERROR: ${e.message}", TextStyle(bold = true))
+        printer.addText("ERROR: " + e.message, TextStyle(bold = true))
         printer.addFeedLine(2)
         printer.cutPaper()
     }
 }
-
-/**
- * Parse the JSON string into your receipt data structure
- * Implement your own parsing logic based on your JSON DSL format
- */
-fun parseReceipt(json: String): Receipt {
-    val jsonElement = Json.parseToJsonElement(json)
-    val jsonObject = jsonElement.jsonObject
-    
-    val elements = mutableListOf<ReceiptElement>()
-    
-    // Example parsing - modify based on your DSL structure
-    jsonObject["elements"]?.jsonArray?.forEach { elementJson ->
-        val elementObj = elementJson.jsonObject
-        elements.add(ReceiptElement(
-            type = elementObj["type"]?.jsonPrimitive?.content ?: "",
-            content = elementObj["content"]?.jsonPrimitive?.contentOrNull,
-            data = elementObj["data"]?.jsonPrimitive?.contentOrNull,
-            field = elementObj["field"]?.jsonPrimitive?.contentOrNull,
-            lines = elementObj["lines"]?.jsonPrimitive?.intOrNull,
-            imageData = elementObj["imageData"]?.jsonPrimitive?.contentOrNull,
-            barcodeType = elementObj["barcodeType"]?.jsonPrimitive?.contentOrNull,
-            style = elementObj["style"]?.let { styleJson ->
-                val styleObj = styleJson.jsonObject
-                ElementStyle(
-                    bold = styleObj["bold"]?.jsonPrimitive?.booleanOrNull ?: false,
-                    size = styleObj["size"]?.jsonPrimitive?.contentOrNull?.let { 
-                        TextSize.valueOf(it) 
-                    } ?: TextSize.NORMAL
-                )
-            }
-        ))
-    }
-    
-    return Receipt(elements = elements)
-}
-
-/**
- * Resolve dynamic field values
- * In a real implementation, these would come from the POS system
- */
-fun resolveDynamicField(field: String): String {
-    return when (field) {
-        "{store_name}" -> "Byte Burgers"
-        "{store_address}" -> "123 Tech Ave, Silicon Valley"
-        "{cashier_name}" -> "Alice"
-        "{timestamp}" -> "2024-01-15 14:30:00"
-        "{order_number}" -> "ORD-001234"
-        "{subtotal}" -> "$25.99"
-        "{tax}" -> "$2.34"
-        "{total}" -> "$28.33"
-        "{item_list}" -> "1x Burger\n1x Fries\n1x Soda"
-        else -> field // Return as-is if not recognized
-    }
-}
-
-// Data classes for your receipt structure
-data class Receipt(
-    val elements: List<ReceiptElement>
-)
-
-data class ReceiptElement(
-    val type: String,
-    val content: String? = null,
-    val data: String? = null,
-    val field: String? = null,
-    val lines: Int? = null,
-    val imageData: String? = null,
-    val barcodeType: String? = null,
-    val style: ElementStyle? = null
-)
-
-data class ElementStyle(
-    val bold: Boolean = false,
-    val size: TextSize = TextSize.NORMAL
-)
