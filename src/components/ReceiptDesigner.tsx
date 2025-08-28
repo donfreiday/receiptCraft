@@ -112,10 +112,10 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
 
   const loadTemplate = () => {
     const templateElements: ReceiptElement[] = [
-      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'separator', content: '================================' },
       { id: generateId(), type: 'header', content: 'BYTE BURGERS', alignment: 'CENTER' },
       { id: generateId(), type: 'text', content: 'Store #001', alignment: 'CENTER' },
-      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'separator', content: '================================' },
       { id: generateId(), type: 'orderInfo', content: 'Order #A-0042            Date: 12/04/2024' },
       { id: generateId(), type: 'separator', content: '------------------------------------------------' },
       { id: generateId(), type: 'itemHeader', content: 'ITEMS:' },
@@ -129,10 +129,12 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
       { id: generateId(), type: 'tax', content: 'Tax (8.0%):                             $2.24' },
       { id: generateId(), type: 'separator', content: '------------------------------------------------' },
       { id: generateId(), type: 'total', content: 'TOTAL:                                 $30.19' },
-      { id: generateId(), type: 'separator', content: '================================================' },
-      { id: generateId(), type: 'thanks', content: 'Thank you for your order!', alignment: 'CENTER' },
-      { id: generateId(), type: 'thanks', content: 'Have a great day!', alignment: 'CENTER' },
-      { id: generateId(), type: 'separator', content: '================================================' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'thanks', content: '        Thank you for your order!', alignment: 'CENTER' },
+      { id: generateId(), type: 'thanks', content: '           Have a great day!', alignment: 'CENTER' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'separator', content: '================================' },
     ];
     
     setElements(templateElements);
@@ -213,7 +215,7 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
                       {element.lines || 1} line{(element.lines || 1) > 1 ? 's' : ''}
                     </div>
                   ) : (
-                    <span className="break-all whitespace-pre-wrap">{element.content || '[Empty]'}</span>
+                    <pre className="break-all whitespace-pre-wrap font-mono m-0">{element.content || '[Empty]'}</pre>
                   )}
                   
                   <button

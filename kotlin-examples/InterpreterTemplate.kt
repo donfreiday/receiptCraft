@@ -31,10 +31,17 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         
                         val content = if (section.has("content")) section.getString("content") else ""
-                        printer.addText(content, TextStyle(bold = true))
+                        val lines = content.split("\n")
+                        for (line in lines) {
+                            printer.addText(line, TextStyle(bold = true))
+                        }
                     }
                     "separator" -> {
-                        printer.addText("================================", null)
+                        val content = if (section.has("content")) section.getString("content") else "================================"
+                        val lines = content.split("\n")
+                        for (line in lines) {
+                            printer.addText(line, null)
+                        }
                     }
                     "text" -> {
                         // Set alignment
@@ -46,7 +53,10 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         
                         val content = if (section.has("content")) section.getString("content") else ""
-                        printer.addText(content, null)
+                        val lines = content.split("\n")
+                        for (line in lines) {
+                            printer.addText(line, null)
+                        }
                     }
                     "orderInfo", "item", "itemPrice", "subtotal", "tax", "total" -> {
                         // Set alignment
@@ -58,11 +68,14 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         
                         val content = if (section.has("content")) section.getString("content") else ""
+                        val lines = content.split("\n")
                         val isBold = type == "total"
-                        if (isBold) {
-                            printer.addText(content, TextStyle(bold = true))
-                        } else {
-                            printer.addText(content, null)
+                        for (line in lines) {
+                            if (isBold) {
+                                printer.addText(line, TextStyle(bold = true))
+                            } else {
+                                printer.addText(line, null)
+                            }
                         }
                     }
                     "itemHeader" -> {
@@ -75,7 +88,10 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         
                         val content = if (section.has("content")) section.getString("content") else ""
-                        printer.addText(content, null)
+                        val lines = content.split("\n")
+                        for (line in lines) {
+                            printer.addText(line, null)
+                        }
                     }
                     "thankYou" -> {
                         // Set alignment
@@ -87,7 +103,10 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         
                         val content = if (section.has("content")) section.getString("content") else "Thank you!"
-                        printer.addText(content, null)
+                        val lines = content.split("\n")
+                        for (line in lines) {
+                            printer.addText(line, null)
+                        }
                     }
                     "spacer" -> {
                         val lines = if (section.has("lines")) section.getInt("lines") else 1
