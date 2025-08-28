@@ -11,36 +11,43 @@ import kotlinx.serialization.json.*
  */
 fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
     try {
+        // Set center alignment for all text
+        printer.addTextAlign(TextAlign.CENTER)
+        
         // Ignore the JSON input and print the exact test receipt
-        printer.addText("================================================", null)
+        printer.addText("================================", null)
         printer.addText("RECEIPT PRINTER TEST", null)
-        printer.addText("================================================", null)
+        printer.addText("================================", null)
         printer.addText("Welcome to the Hackathon!", null)
-        printer.addText("", null)
+        printer.addFeedLine(1)
         
-        printer.addText("        This is a test receipt to verify", null)
-        printer.addText("        your system is working correctly.", null)
-        printer.addText("        ", null)
-        printer.addText("        Round 0: System Check", null)
-        printer.addText("        ", null)
-        printer.addText("        Your pipeline should work as:", null)
-        printer.addText("        1. Design in UI", null)
-        printer.addText("        2. Generate JSON", null)
-        printer.addText("        3. Interpret with Kotlin", null)
-        printer.addText("        4. Print receipt", null)
-        printer.addText("        ", null)
+        printer.addText("This is a test receipt to verify", null)
+        printer.addText("your system is working correctly.", null)
+        printer.addFeedLine(1)
+        printer.addText("Round 0: System Check", null)
+        printer.addFeedLine(1)
+        printer.addText("Your pipeline should work as:", null)
+        printer.addText("1. Design in UI", null)
+        printer.addText("2. Generate JSON", null)
+        printer.addText("3. Interpret with Kotlin", null)
+        printer.addText("4. Print receipt", null)
+        printer.addFeedLine(1)
         
-        printer.addText("================================================", null)
-        printer.addText("", null)
-        printer.addText("        Good luck teams!", null)
-        printer.addText("        ", null)
-        printer.addText("================================================", null)
+        printer.addText("================================", null)
+        printer.addFeedLine(1)
+        printer.addText("Good luck teams!", null)
+        printer.addFeedLine(1)
+        printer.addText("================================", null)
+        
+        // Add extra feed lines before cutting to ensure everything prints
+        printer.addFeedLine(3)
         
         // Cut the paper at the end
         printer.cutPaper()
         
     } catch (e: Exception) {
         // Error handling - print error message on receipt
+        printer.addTextAlign(TextAlign.CENTER)
         printer.addText("ERROR: ${e.message}", TextStyle(bold = true))
         printer.addFeedLine(2)
         printer.cutPaper()
