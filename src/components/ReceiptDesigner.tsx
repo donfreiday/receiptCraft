@@ -25,47 +25,42 @@ interface ReceiptDesignerProps {
 export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }) => {
   // TODO: Implement your receipt designer
   
-  // Initialize with sample JSON only once when component mounts
+  // Initialize with test receipt JSON from AGENT-CLAUDE.md
   React.useEffect(() => {
-    const sampleJson = {
+    const testReceiptJson = {
       elements: [
-        // Header - centered with store info using template variables
-        { type: "align", alignment: "CENTER" },
-        { type: "text", content: "Welcome to {{STORE_NAME}}", style: { bold: true, size: "LARGE" } },
-        { type: "text", content: "Store #{{STORE_NUMBER}}", style: { size: "NORMAL" } },
+        // Header separator
+        { type: "text", content: "================================================" },
+        { type: "text", content: "RECEIPT PRINTER TEST" },
+        { type: "text", content: "================================================" },
+        { type: "text", content: "Welcome to the Hackathon!" },
         { type: "feedLine", lines: 1 },
         
-        // Order details - left aligned
-        { type: "align", alignment: "LEFT" },
-        { type: "text", content: "Order ID: {{ORDER_ID}}", style: { bold: false } },
+        // Test description - indented
+        { type: "text", content: "        This is a test receipt to verify" },
+        { type: "text", content: "        your system is working correctly." },
         { type: "feedLine", lines: 1 },
-        
-        // Separator line
-        { type: "text", content: "================================" },
+        { type: "text", content: "        Round 0: System Check" },
         { type: "feedLine", lines: 1 },
-        
-        // Items header
-        { type: "text", content: "PURCHASED ITEMS:", style: { bold: true, underline: true } },
+        { type: "text", content: "        Your pipeline should work as:" },
+        { type: "text", content: "        1. Design in UI" },
+        { type: "text", content: "        2. Generate JSON" },
+        { type: "text", content: "        3. Interpret with Kotlin" },
+        { type: "text", content: "        4. Print receipt" },
         { type: "feedLine", lines: 1 },
-        
-        // Special marker for interpreter to insert item list
-        { type: "items_list" },
         
         // Footer separator
+        { type: "text", content: "================================================" },
         { type: "feedLine", lines: 1 },
-        { type: "text", content: "================================" },
+        { type: "text", content: "        Good luck teams!" },
         { type: "feedLine", lines: 1 },
-        
-        // Thank you message - centered
-        { type: "align", alignment: "CENTER" },
-        { type: "text", content: "Thank you for your order!", style: { size: "NORMAL" } },
-        { type: "feedLine", lines: 3 },
+        { type: "text", content: "================================================" },
         
         // Cut the paper
         { type: "cutPaper" }
       ]
     };
-    onJsonUpdate(JSON.stringify(sampleJson, null, 2));
+    onJsonUpdate(JSON.stringify(testReceiptJson, null, 2));
   }, []); // Remove onJsonUpdate from dependencies to only run once
 
   return (
