@@ -52,6 +52,22 @@ const ELEMENT_TYPES: DragItem[] = [
   { type: 'pointsEarned', label: '⭐ Points Earned', defaultContent: '  Points Earned Today: 40' },
   { type: 'totalPoints', label: '💰 Total Points', defaultContent: '  Total Points: 1,287' },
   { type: 'membershipStatus', label: '👑 Membership Status', defaultContent: '  Status: GOLD Member' },
+  { type: 'platinumMember', label: '💎 Platinum Member', defaultContent: 'PLATINUM MEMBER:' },
+  { type: 'customerProfile', label: '👤 Customer Profile', defaultContent: '  Ada Lovelace (CUST-1337)' },
+  { type: 'orderItemsHeader', label: '📦 Order Items Header', defaultContent: 'ORDER ITEMS:' },
+  { type: 'categoryHeader', label: '🏷️ Category Header', defaultContent: '== MAINS ==' },
+  { type: 'itemSubtotal', label: '📊 Item Subtotal', defaultContent: 'Item Subtotal:' },
+  { type: 'itemDiscounts', label: '💸 Item Discounts', defaultContent: 'Item Discounts:' },
+  { type: 'orderPromotionHeader', label: '🎁 Order Promotions', defaultContent: 'ORDER PROMOTIONS:' },
+  { type: 'memberAppreciation', label: '🙏 Member Appreciation', defaultContent: '  Member Appreciation (10%)             -$5.95' },
+  { type: 'appDiscount', label: '📱 App Discount', defaultContent: '  App Order Discount                    -$3.00' },
+  { type: 'subtotalAfterAll', label: '💰 Final Subtotal', defaultContent: 'Subtotal after all discounts:' },
+  { type: 'paymentType', label: '💳 Payment Type', defaultContent: 'Payment: APPLE PAY' },
+  { type: 'rewardsSummary', label: '🏆 Rewards Summary', defaultContent: 'REWARDS SUMMARY:' },
+  { type: 'pointsEarnedToday', label: '⭐ Points Today', defaultContent: '  Points Earned: 55' },
+  { type: 'newBalance', label: '💎 New Balance', defaultContent: '  New Balance: 3,902' },
+  { type: 'nextReward', label: '🎯 Next Reward', defaultContent: '  Next Reward: 98 points away' },
+  { type: 'personalizedThanks', label: '💝 Personalized Thanks', defaultContent: '     Thanks for being PLATINUM, Ada!' },
   { type: 'loyalty', label: '⭐ Loyalty Points', defaultContent: '         Loyalty points earned: 27' },
   { type: 'thanks', label: '😊 Thank You', defaultContent: 'Thank you for your order!' },
   { type: 'spacer', label: '⬜ Blank Line', lines: 1 },
@@ -238,6 +254,61 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
     updateJson(templateElements);
   };
 
+  const loadRound4Template = () => {
+    const templateElements: ReceiptElement[] = [
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'header', content: 'TECH TREATS', alignment: 'CENTER' },
+      { id: generateId(), type: 'text', content: 'Store #004', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'orderInfo', content: 'Order #D-9999   Date: 12/04/2024' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'platinumMember', content: 'PLATINUM MEMBER:' },
+      { id: generateId(), type: 'customerProfile', content: '  Ada Lovelace (CUST-1337)' },
+      { id: generateId(), type: 'loyaltyPoints', content: '  Loyalty Points: 3,847' },
+      { id: generateId(), type: 'memberSince', content: '  Member Since: 2018-01-01' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'orderItemsHeader', content: 'ORDER ITEMS:' },
+      { id: generateId(), type: 'categoryHeader', content: '== MAINS ==' },
+      { id: generateId(), type: 'item', content: 'Quantum Quiche          x2 $25.98' },
+      { id: generateId(), type: 'text', content: '  @ $12.99 each' },
+      { id: generateId(), type: 'itemPromotion', content: '  ** Tech Tuesday Special    -$5.00 **' },
+      { id: generateId(), type: 'item', content: 'RAM Ramen               x1 $14.99' },
+      { id: generateId(), type: 'categoryHeader', content: '== DESSERTS ==' },
+      { id: generateId(), type: 'item', content: 'Binary Brownie          x3 $13.50' },
+      { id: generateId(), type: 'text', content: '  @ $4.50 each' },
+      { id: generateId(), type: 'itemPromotion', content: '  ** Sweet Deal              -$2.00 **' },
+      { id: generateId(), type: 'categoryHeader', content: '== BEVERAGES ==' },
+      { id: generateId(), type: 'item', content: 'Cloud Coffee            x2 $11.98' },
+      { id: generateId(), type: 'text', content: '  @ $5.99 each' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'itemSubtotal', content: 'Item Subtotal:          $66.45' },
+      { id: generateId(), type: 'itemDiscounts', content: 'Item Discounts:          -$7.00' },
+      { id: generateId(), type: 'orderPromotionHeader', content: 'ORDER PROMOTIONS:' },
+      { id: generateId(), type: 'memberAppreciation', content: '  Member Appreciation (10%)    -$5.95' },
+      { id: generateId(), type: 'appDiscount', content: '  App Order Discount           -$3.00' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'subtotalAfterAll', content: 'Subtotal after all discounts: $50.50' },
+      { id: generateId(), type: 'tax', content: 'Tax (9.0%):             $4.55' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'total', content: 'TOTAL:                  $55.05' },
+      { id: generateId(), type: 'paymentType', content: 'Payment: APPLE PAY' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'rewardsSummary', content: 'REWARDS SUMMARY:' },
+      { id: generateId(), type: 'pointsEarnedToday', content: '  Points Earned: 55' },
+      { id: generateId(), type: 'newBalance', content: '  New Balance: 3,902' },
+      { id: generateId(), type: 'nextReward', content: '  Next Reward: 98 points away' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'personalizedThanks', content: 'Thanks for being PLATINUM, Ada!', alignment: 'CENTER' },
+      { id: generateId(), type: 'thanks', content: 'Your tech treats are on their way!', alignment: 'CENTER' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'separator', content: '================================' },
+    ];
+    
+    setElements(templateElements);
+    updateJson(templateElements);
+  };
+
   const handleDragStart = (e: React.DragEvent, item: DragItem) => {
     setDraggedItem(item);
     e.dataTransfer.effectAllowed = 'copy';
@@ -279,9 +350,16 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
           
           <button
             onClick={loadRound3Template}
-            className="w-full mb-4 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm flex-shrink-0"
+            className="w-full mb-2 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm flex-shrink-0"
           >
             🍕 Load Round 3 Template
+          </button>
+          
+          <button
+            onClick={loadRound4Template}
+            className="w-full mb-4 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex-shrink-0"
+          >
+            💻 Load Round 4 Template
           </button>
 
           <div className="space-y-2 overflow-y-auto flex-1">

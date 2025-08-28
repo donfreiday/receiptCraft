@@ -52,7 +52,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         printer.addText(content, null)
                         printer.addFeedLine(1)
                     }
-                    "orderInfo", "item", "itemPrice", "itemPromotion", "subtotal", "discounts", "promotion", "subtotalAfter", "tax", "total", "loyalty", "customerName", "memberStatus", "customerId", "loyaltyPoints", "memberSince", "paymentMethod", "pointsEarned", "totalPoints", "membershipStatus" -> {
+                    "orderInfo", "item", "itemPrice", "itemPromotion", "subtotal", "discounts", "promotion", "subtotalAfter", "tax", "total", "loyalty", "customerName", "memberStatus", "customerId", "loyaltyPoints", "memberSince", "paymentMethod", "pointsEarned", "totalPoints", "membershipStatus", "customerProfile", "itemSubtotal", "itemDiscounts", "memberAppreciation", "appDiscount", "subtotalAfterAll", "paymentType", "pointsEarnedToday", "newBalance", "nextReward", "personalizedThanks" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
@@ -70,7 +70,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         printer.addFeedLine(1)
                     }
-                    "itemHeader", "promotionHeader", "customerHeader", "loyaltyRewardsHeader" -> {
+                    "itemHeader", "promotionHeader", "customerHeader", "loyaltyRewardsHeader", "platinumMember", "orderItemsHeader", "categoryHeader", "orderPromotionHeader", "rewardsSummary" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
