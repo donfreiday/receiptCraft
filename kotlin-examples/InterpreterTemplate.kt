@@ -21,7 +21,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                 val type = section.getString("type")
                 
                 when (type) {
-                    "storeHeader" -> {
+                    "header", "storeHeader" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
@@ -52,7 +52,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         printer.addText(content, null)
                         printer.addFeedLine(1)
                     }
-                    "orderInfo", "item", "itemPrice", "subtotal", "tax", "total" -> {
+                    "orderInfo", "item", "itemPrice", "itemPromotion", "subtotal", "discounts", "promotion", "subtotalAfter", "tax", "total", "loyalty" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
@@ -70,7 +70,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         printer.addFeedLine(1)
                     }
-                    "itemHeader" -> {
+                    "itemHeader", "promotionHeader" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
@@ -83,7 +83,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         printer.addText(content, null)
                         printer.addFeedLine(1)
                     }
-                    "thankYou" -> {
+                    "thankYou", "thanks" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "CENTER"
                         when (alignmentStr) {

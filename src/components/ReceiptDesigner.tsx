@@ -33,9 +33,15 @@ const ELEMENT_TYPES: DragItem[] = [
   { type: 'itemHeader', label: '🛍️ Items Section', defaultContent: 'ITEMS:' },
   { type: 'item', label: '🍔 Menu Item', defaultContent: 'Cheeseburger' },
   { type: 'itemPrice', label: '💰 Item with Price', defaultContent: 'French Fries' },
+  { type: 'itemPromotion', label: '🎯 Item Promotion', defaultContent: '  ** Buy One Get One 50% Off      -$3.00 **' },
   { type: 'subtotal', label: '🧮 Subtotal', defaultContent: 'Subtotal:' },
+  { type: 'discounts', label: '💸 Discounts', defaultContent: 'Discounts:' },
+  { type: 'promotionHeader', label: '🎁 Promotion Header', defaultContent: 'PROMOTIONS:' },
+  { type: 'promotion', label: '🎉 Order Promotion', defaultContent: '  Morning Rush Special                 -$2.00' },
+  { type: 'subtotalAfter', label: '🧾 Subtotal After', defaultContent: 'Subtotal after discounts:' },
   { type: 'tax', label: '🏛️ Tax Line', defaultContent: 'Tax (8.0%):' },
   { type: 'total', label: '💳 Total', defaultContent: 'TOTAL:' },
+  { type: 'loyalty', label: '⭐ Loyalty Points', defaultContent: '         Loyalty points earned: 27' },
   { type: 'thanks', label: '😊 Thank You', defaultContent: 'Thank you for your order!' },
   { type: 'spacer', label: '⬜ Blank Line', lines: 1 },
 ];
@@ -110,7 +116,7 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
     });
   };
 
-  const loadTemplate = () => {
+  const loadRound1Template = () => {
     const templateElements: ReceiptElement[] = [
       { id: generateId(), type: 'separator', content: '================================' },
       { id: generateId(), type: 'header', content: 'BYTE BURGERS', alignment: 'CENTER' },
@@ -133,6 +139,43 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
       { id: generateId(), type: 'spacer', lines: 1 },
       { id: generateId(), type: 'thanks', content: '        Thank you for your order!', alignment: 'CENTER' },
       { id: generateId(), type: 'thanks', content: '           Have a great day!', alignment: 'CENTER' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'separator', content: '================================' },
+    ];
+    
+    setElements(templateElements);
+    updateJson(templateElements);
+  };
+
+  const loadRound2Template = () => {
+    const templateElements: ReceiptElement[] = [
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'header', content: 'JAVA JUNCTION', alignment: 'CENTER' },
+      { id: generateId(), type: 'text', content: 'Store #002', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'orderInfo', content: 'Order #B-1337   Date: 12/04/2024' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'itemHeader', content: 'ITEMS:' },
+      { id: generateId(), type: 'item', content: 'Large Latte             x2 $11.98' },
+      { id: generateId(), type: 'text', content: '  @ $5.99 each' },
+      { id: generateId(), type: 'itemPromotion', content: '  ** Buy One Get One 50% Off -$3.00 **' },
+      { id: generateId(), type: 'item', content: 'Chocolate Croissant     x2  $9.00' },
+      { id: generateId(), type: 'text', content: '  @ $4.50 each' },
+      { id: generateId(), type: 'item', content: 'Breakfast Sandwich      x1  $7.99' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'subtotal', content: 'Subtotal:               $28.97' },
+      { id: generateId(), type: 'discounts', content: 'Discounts:               -$3.00' },
+      { id: generateId(), type: 'promotionHeader', content: 'PROMOTIONS:' },
+      { id: generateId(), type: 'promotion', content: '  Morning Rush Special     -$2.00' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'subtotalAfter', content: 'Subtotal after discounts: $23.97' },
+      { id: generateId(), type: 'tax', content: 'Tax (8.75%):             $2.53' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'total', content: 'TOTAL:                  $26.50' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'thanks', content: '☕ Thanks for choosing Java Junction! ☕', alignment: 'CENTER' },
+      { id: generateId(), type: 'loyalty', content: 'Loyalty points earned: 27', alignment: 'CENTER' },
       { id: generateId(), type: 'spacer', lines: 1 },
       { id: generateId(), type: 'separator', content: '================================' },
     ];
@@ -167,10 +210,17 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
           <h3 className="text-lg font-bold text-white mb-4">🧰 Elements</h3>
           
           <button
-            onClick={loadTemplate}
-            className="w-full mb-4 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm flex-shrink-0"
+            onClick={loadRound1Template}
+            className="w-full mb-2 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm flex-shrink-0"
           >
             📋 Load Round 1 Template
+          </button>
+          
+          <button
+            onClick={loadRound2Template}
+            className="w-full mb-4 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm flex-shrink-0"
+          >
+            ☕ Load Round 2 Template
           </button>
 
           <div className="space-y-2 overflow-y-auto flex-1">
