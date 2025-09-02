@@ -68,6 +68,27 @@ const ELEMENT_TYPES: DragItem[] = [
   { type: 'newBalance', label: '💎 New Balance', defaultContent: '  New Balance: 3,902' },
   { type: 'nextReward', label: '🎯 Next Reward', defaultContent: '  Next Reward: 98 points away' },
   { type: 'personalizedThanks', label: '💝 Personalized Thanks', defaultContent: '     Thanks for being PLATINUM, Ada!' },
+  { type: 'tableInfo', label: '🍽️ Table Info', defaultContent: 'Table: 12                Server: Jennifer K.' },
+  { type: 'guestInfo', label: '👥 Guest Info', defaultContent: 'Guests: 3                Rating: ★★★★★' },
+  { type: 'vipGroup', label: '⭐ VIP Group', defaultContent: 'VIP GROUP: Table 12 - Chen Party' },
+  { type: 'groupId', label: '🆔 Group ID', defaultContent: 'Customer ID: GROUP-4452' },
+  { type: 'orderDetails', label: '📋 Order Details', defaultContent: 'ORDER DETAILS:' },
+  { type: 'entreeHeader', label: '🥩 Entrees', defaultContent: 'ENTREES:' },
+  { type: 'appetizerHeader', label: '🥗 Appetizers', defaultContent: 'APPETIZERS:' },
+  { type: 'dessertHeader', label: '🍰 Desserts', defaultContent: 'DESSERTS:' },
+  { type: 'beverageHeader', label: '🍷 Beverages', defaultContent: 'BEVERAGES:' },
+  { type: 'itemModifier', label: '🔧 Item Modifier', defaultContent: '  - Medium Rare' },
+  { type: 'splitPaymentHeader', label: '💳 Split Payment Header', defaultContent: 'SPLIT PAYMENT DETAILS' },
+  { type: 'payerName', label: '👤 Payer Name', defaultContent: 'ALICE CHEN                     $156.43' },
+  { type: 'payingFor', label: '🛒 Paying For', defaultContent: '  Paying for:' },
+  { type: 'payerItem', label: '📦 Payer Item', defaultContent: '    - Wagyu Steak' },
+  { type: 'tip', label: '💰 Tip', defaultContent: '  Tip: $25.00' },
+  { type: 'payerTotal', label: '💳 Payer Total', defaultContent: '  Total: $181.43' },
+  { type: 'paymentMethod', label: '💳 Payment Card', defaultContent: '  Method: VISA ****7823' },
+  { type: 'paymentSummaryHeader', label: '📊 Payment Summary', defaultContent: 'PAYMENT SUMMARY:' },
+  { type: 'totalTips', label: '💰 Total Tips', defaultContent: '  Tips: $60.00' },
+  { type: 'grandTotal', label: '💎 Grand Total', defaultContent: '  Grand Total: $422.84' },
+  { type: 'vipThanks', label: '⭐ VIP Thanks', defaultContent: 'Your VIP status has been noted.' },
   { type: 'loyalty', label: '⭐ Loyalty Points', defaultContent: '         Loyalty points earned: 27' },
   { type: 'thanks', label: '😊 Thank You', defaultContent: 'Thank you for your order!' },
   { type: 'spacer', label: '⬜ Blank Line', lines: 1 },
@@ -309,6 +330,95 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
     updateJson(templateElements);
   };
 
+  const loadRound5Template = () => {
+    const templateElements: ReceiptElement[] = [
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'header', content: 'THE FINAL FEAST', alignment: 'CENTER' },
+      { id: generateId(), type: 'text', content: 'Store #777', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'orderInfo', content: 'Order #SPLIT-8847 Date: 12/04/2024' },
+      { id: generateId(), type: 'tableInfo', content: 'Table: 12           Server: Jennifer K.' },
+      { id: generateId(), type: 'guestInfo', content: 'Guests: 3           Rating: ★★★★★' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'vipGroup', content: 'VIP GROUP: Table 12 - Chen Party' },
+      { id: generateId(), type: 'groupId', content: 'Customer ID: GROUP-4452' },
+      { id: generateId(), type: 'loyaltyPoints', content: 'Loyalty Points: 15,420' },
+      { id: generateId(), type: 'memberSince', content: 'Member Since: 2020-03-15' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'orderDetails', content: 'ORDER DETAILS:' },
+      { id: generateId(), type: 'entreeHeader', content: 'ENTREES:' },
+      { id: generateId(), type: 'item', content: 'Wagyu Steak             x1 $89.99' },
+      { id: generateId(), type: 'itemModifier', content: '  - Medium Rare' },
+      { id: generateId(), type: 'itemModifier', content: '  - Extra Butter' },
+      { id: generateId(), type: 'itemModifier', content: '  - Side: Mashed Potatoes' },
+      { id: generateId(), type: 'item', content: 'Lobster Risotto         x1 $45.99' },
+      { id: generateId(), type: 'itemModifier', content: '  - Extra Parmesan' },
+      { id: generateId(), type: 'itemModifier', content: '  - Side: Asparagus' },
+      { id: generateId(), type: 'appetizerHeader', content: 'APPETIZERS:' },
+      { id: generateId(), type: 'item', content: 'Caesar Salad            x2 $25.98' },
+      { id: generateId(), type: 'text', content: '  @ $12.99 each' },
+      { id: generateId(), type: 'itemModifier', content: '  - No Anchovies' },
+      { id: generateId(), type: 'itemModifier', content: '  - Extra Croutons' },
+      { id: generateId(), type: 'item', content: 'Truffle Fries           x1 $18.99' },
+      { id: generateId(), type: 'dessertHeader', content: 'DESSERTS:' },
+      { id: generateId(), type: 'item', content: 'Chocolate Soufflé       x2 $29.98' },
+      { id: generateId(), type: 'text', content: '  @ $14.99 each' },
+      { id: generateId(), type: 'itemModifier', content: '  - Extra Vanilla Ice Cream' },
+      { id: generateId(), type: 'itemPromotion', content: '  ** Dessert Happy Hour      -$5.00 **' },
+      { id: generateId(), type: 'beverageHeader', content: 'BEVERAGES:' },
+      { id: generateId(), type: 'item', content: 'Vintage Wine            x1 $125.00' },
+      { id: generateId(), type: 'itemModifier', content: '  - 2019 Cabernet Sauvignon' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'subtotal', content: 'Subtotal:              $335.93' },
+      { id: generateId(), type: 'discounts', content: 'Discounts:              -$5.00' },
+      { id: generateId(), type: 'tax', content: 'Tax (9.5%):            $31.91' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'total', content: 'TOTAL:                 $362.84' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'splitPaymentHeader', content: 'SPLIT PAYMENT DETAILS', alignment: 'CENTER' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'payerName', content: 'ALICE CHEN             $156.43' },
+      { id: generateId(), type: 'payingFor', content: '  Paying for:' },
+      { id: generateId(), type: 'payerItem', content: '    - Wagyu Steak' },
+      { id: generateId(), type: 'payerItem', content: '    - Truffle Fries' },
+      { id: generateId(), type: 'tip', content: '  Tip: $25.00' },
+      { id: generateId(), type: 'payerTotal', content: '  Total: $181.43' },
+      { id: generateId(), type: 'paymentMethod', content: '  Method: VISA ****7823' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'payerName', content: 'BOB MARTINEZ           $89.54' },
+      { id: generateId(), type: 'payingFor', content: '  Paying for:' },
+      { id: generateId(), type: 'payerItem', content: '    - Lobster Risotto' },
+      { id: generateId(), type: 'payerItem', content: '    - Caesar Salad (1)' },
+      { id: generateId(), type: 'tip', content: '  Tip: $15.00' },
+      { id: generateId(), type: 'payerTotal', content: '  Total: $104.54' },
+      { id: generateId(), type: 'paymentMethod', content: '  Method: MASTERCARD ****9921' },
+      { id: generateId(), type: 'separator', content: '--------------------------------' },
+      { id: generateId(), type: 'payerName', content: 'CAROL WU               $116.87' },
+      { id: generateId(), type: 'payingFor', content: '  Paying for:' },
+      { id: generateId(), type: 'payerItem', content: '    - Vintage Wine' },
+      { id: generateId(), type: 'payerItem', content: '    - Caesar Salad (1)' },
+      { id: generateId(), type: 'payerItem', content: '    - Chocolate Soufflé (2)' },
+      { id: generateId(), type: 'tip', content: '  Tip: $20.00' },
+      { id: generateId(), type: 'payerTotal', content: '  Total: $136.87' },
+      { id: generateId(), type: 'paymentMethod', content: '  Method: AMEX ****3345' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'paymentSummaryHeader', content: 'PAYMENT SUMMARY:' },
+      { id: generateId(), type: 'subtotal', content: '  Subtotal: $362.84' },
+      { id: generateId(), type: 'totalTips', content: '  Tips: $60.00' },
+      { id: generateId(), type: 'grandTotal', content: '  Grand Total: $422.84' },
+      { id: generateId(), type: 'separator', content: '================================' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'thanks', content: 'Thank you for dining at The Final Feast!', alignment: 'CENTER' },
+      { id: generateId(), type: 'vipThanks', content: 'Your VIP status has been noted.', alignment: 'CENTER' },
+      { id: generateId(), type: 'thanks', content: 'We hope to see you again soon!', alignment: 'CENTER' },
+      { id: generateId(), type: 'spacer', lines: 1 },
+      { id: generateId(), type: 'separator', content: '================================' },
+    ];
+    
+    setElements(templateElements);
+    updateJson(templateElements);
+  };
+
   const handleDragStart = (e: React.DragEvent, item: DragItem) => {
     setDraggedItem(item);
     e.dataTransfer.effectAllowed = 'copy';
@@ -357,9 +467,16 @@ export const ReceiptDesigner: React.FC<ReceiptDesignerProps> = ({ onJsonUpdate }
           
           <button
             onClick={loadRound4Template}
-            className="w-full mb-4 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex-shrink-0"
+            className="w-full mb-2 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm flex-shrink-0"
           >
             💻 Load Round 4 Template
+          </button>
+          
+          <button
+            onClick={loadRound5Template}
+            className="w-full mb-4 px-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm flex-shrink-0"
+          >
+            🍽️ Load Round 5 Template
           </button>
 
           <div className="space-y-2 overflow-y-auto flex-1">

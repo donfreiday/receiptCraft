@@ -52,7 +52,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         printer.addText(content, null)
                         printer.addFeedLine(1)
                     }
-                    "orderInfo", "item", "itemPrice", "itemPromotion", "subtotal", "discounts", "promotion", "subtotalAfter", "tax", "total", "loyalty", "customerName", "memberStatus", "customerId", "loyaltyPoints", "memberSince", "paymentMethod", "pointsEarned", "totalPoints", "membershipStatus", "customerProfile", "itemSubtotal", "itemDiscounts", "memberAppreciation", "appDiscount", "subtotalAfterAll", "paymentType", "pointsEarnedToday", "newBalance", "nextReward", "personalizedThanks" -> {
+                    "orderInfo", "item", "itemPrice", "itemPromotion", "subtotal", "discounts", "promotion", "subtotalAfter", "tax", "total", "loyalty", "customerName", "memberStatus", "customerId", "loyaltyPoints", "memberSince", "paymentMethod", "pointsEarned", "totalPoints", "membershipStatus", "customerProfile", "itemSubtotal", "itemDiscounts", "memberAppreciation", "appDiscount", "subtotalAfterAll", "paymentType", "pointsEarnedToday", "newBalance", "nextReward", "personalizedThanks", "tableInfo", "guestInfo", "groupId", "itemModifier", "payerName", "payingFor", "payerItem", "tip", "payerTotal", "totalTips", "grandTotal", "vipThanks" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
@@ -70,7 +70,7 @@ fun interpret(jsonString: String, printer: EpsonPrinter, order: Order?) {
                         }
                         printer.addFeedLine(1)
                     }
-                    "itemHeader", "promotionHeader", "customerHeader", "loyaltyRewardsHeader", "platinumMember", "orderItemsHeader", "categoryHeader", "orderPromotionHeader", "rewardsSummary" -> {
+                    "itemHeader", "promotionHeader", "customerHeader", "loyaltyRewardsHeader", "platinumMember", "orderItemsHeader", "categoryHeader", "orderPromotionHeader", "rewardsSummary", "vipGroup", "orderDetails", "entreeHeader", "appetizerHeader", "dessertHeader", "beverageHeader", "splitPaymentHeader", "paymentSummaryHeader" -> {
                         // Set alignment
                         val alignmentStr = if (section.has("alignment")) section.getString("alignment") else "LEFT"
                         when (alignmentStr) {
